@@ -61,6 +61,17 @@ function qs(params = {}) {
   return str ? `?${str}` : "";
 }
 
+/** Unauthenticated marketplace tier — never sends a token. */
+export const publicApi = {
+  stats: () => request("/api/public/stats", { auth: false }),
+  trades: () => request("/api/public/trades", { auth: false }),
+  jobs: (filters) => request(`/api/public/jobs${qs(filters)}`, { auth: false }),
+  job: (id) => request(`/api/public/jobs/${id}`, { auth: false }),
+  workers: (filters) => request(`/api/public/workers${qs(filters)}`, { auth: false }),
+  worker: (id) => request(`/api/public/workers/${id}`, { auth: false }),
+  companies: () => request("/api/public/companies", { auth: false }),
+};
+
 export const api = {
   login: (email, password) =>
     request("/api/auth/login", { method: "POST", body: { email, password }, auth: false }),
