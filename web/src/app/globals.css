@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #1e3a6b;
+  --color-brand-dark: #16305a;
+  --color-brand-mid: #2f5390;
+  --color-brand-soft: #e9eef7;
+  --color-gold: #c9942f;
+  --color-gold-dark: #a97a20;
+  --color-gold-soft: #fbf2df;
+  --color-ink: #0f172a;
+  --color-muted: #475569;
+  --color-faint: #64748b;
+  --color-canvas: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-ok: #059669;
+  --color-ok-soft: #e7f6f0;
+  --color-warn: #c9942f;
+  --color-warn-soft: #fbf2df;
+  --color-bad: #e11d48;
+  --color-bad-soft: #fdeaef;
+
+  --font-sans: var(--font-latin), var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic), var(--font-latin), ui-sans-serif, system-ui, sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes zeo-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.zeo-fade-in {
+  animation: zeo-fade-in 220ms ease-out;
+}
