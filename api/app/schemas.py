@@ -116,6 +116,42 @@ class WorkerOut(ORMModel):
     trade: TradeOut
 
 
+# ---------- public (unauthenticated) ----------
+
+
+class PublicWorkerOut(ORMModel):
+    """Worker profile as an anonymous visitor sees it: no email, no phone, masked name."""
+
+    id: int
+    full_name: str  # masked, e.g. "Ahmed A."
+    city: str
+    years_experience: int
+    expected_salary_sar: int
+    availability_date: date
+    verification_status: VerificationStatus
+    headline: str
+    bio: str
+    trade: TradeOut
+
+
+class PublicStats(BaseModel):
+    workers: int
+    verified_workers: int
+    open_jobs: int
+    contractors: int
+    cities: int
+    trades: int
+
+
+class TradeTile(BaseModel):
+    id: int
+    slug: str
+    name_en: str
+    name_ar: str
+    open_jobs: int
+    workers: int
+
+
 # ---------- applications ----------
 
 

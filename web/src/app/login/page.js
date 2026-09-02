@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { HardHat, ShieldCheck, UserRound } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight, HardHat, ShieldCheck, UserRound } from "lucide-react";
 
 import { LangToggle } from "@/components/layout/lang-toggle";
 import { Button, ErrorNote, Field, Input } from "@/components/ui";
@@ -22,10 +23,14 @@ const PANEL_STATS = [
   { key: "statCities", value: "4" },
 ];
 
-export default function LoginPage() {
-  const { t } = useLocale();
+function LoginView() {
+  const { t, isRtl } = useLocale();
   const { user, ready, login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Public pages send visitors here with ?next=<gated route> so the CTA finishes where it started.
+  const next = searchParams.get("next") || "/dashboard";
+  const BackIcon = isRtl ? ArrowRight : ArrowLeft;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,8 +38,8 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (ready && user) router.replace("/dashboard");
-  }, [ready, user, router]);
+    if (ready && user) router.replace(next);
+  }, [ready, user, router, next]);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -42,7 +47,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email.trim(), password);
-      router.replace("/dashboard");
+      router.replace(next);
     } catch (err) {
       setError(err.message);
       setSubmitting(false);
@@ -101,11 +106,17 @@ export default function LoginPage() {
       </section>
 
       <section className="flex flex-col px-5 py-8 sm:px-10">
-        <div className="flex items-center justify-between lg:justify-end">
-          <span className="flex items-center gap-2 lg:hidden">
-            <Image src="/logo.jpeg" alt="ZEO Find Work" width={40} height={40} className="size-10 rounded-lg object-cover" />
-            <span className="text-sm font-bold text-ink">{t("brand")}</span>
-          </span>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors duration-200 hover:text-brand"
+          >
+            <BackIcon className="size-4" aria-hidden="true" />
+            <span className="flex items-center gap-2 lg:hidden">
+              <Image src="/logo.jpeg" alt="ZEO Find Work" width={32} height={32} className="size-8 rounded-lg object-cover" />
+            </span>
+            {t("public.nav.home")}
+          </Link>
           <LangToggle />
         </div>
 
@@ -167,5 +178,13 @@ export default function LoginPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginView />
+    </Suspense>
   );
 }

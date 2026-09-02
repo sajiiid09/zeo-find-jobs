@@ -190,6 +190,84 @@ const en = {
     contractor: "Contractor",
     actions: "Actions",
   },
+  public: {
+    nav: {
+      home: "Home",
+      talent: "Find talent",
+      jobs: "Browse jobs",
+      signIn: "Sign in",
+      dashboard: "Dashboard",
+    },
+    hero: {
+      title: "Hire skilled construction workers across Saudi Arabia",
+      subtitle:
+        "Verified electricians, welders, steel fixers and site supervisors — and the contractors hiring them. Search free, sign in to hire.",
+      searchPlaceholder: "Search a trade, job title or skill",
+      searchCta: "Search",
+      browseTalent: "Browse talent",
+      browseJobs: "Browse jobs",
+      popular: "Popular",
+    },
+    stats: {
+      workers: "Workers on the platform",
+      verified: "Verified profiles",
+      jobs: "Open jobs",
+      contractors: "Contractors hiring",
+    },
+    trades: {
+      title: "Browse by trade",
+      subtitle: "Eight trades covering the full site crew.",
+      openJobs: "open jobs",
+      workers: "workers",
+    },
+    featuredWorkers: {
+      title: "Available workers",
+      subtitle: "Verified first, most experienced first.",
+    },
+    featuredJobs: {
+      title: "Latest openings",
+      subtitle: "Posted by contractors across the Kingdom.",
+    },
+    how: {
+      title: "How ZEO works",
+      workerTitle: "For workers",
+      workerBody:
+        "Create a profile with your trade, city and expected salary. Once our team verifies you, contractors can find and contact you.",
+      contractorTitle: "For contractors",
+      contractorBody:
+        "Post a role in minutes, review applicants against verified profiles, and move them from shortlist to hire in one place.",
+      adminTitle: "Verified by ZEO",
+      adminBody:
+        "Every worker profile is reviewed before it goes live, and job posts are moderated — so both sides can trust what they see.",
+    },
+    cta: {
+      title: "Ready to hire, or ready to work?",
+      body: "Sign in to apply for jobs, contact workers and manage your hiring.",
+      button: "Sign in to get started",
+    },
+    gate: {
+      contactTitle: "Contact details are private",
+      contactBody: "Sign in as a contractor to see this worker's email and phone number.",
+      contactButton: "Sign in to view contact",
+      applyTitle: "Sign in to apply",
+      applyBody: "Create or use a worker account to send an application to this contractor.",
+      applyButton: "Sign in to apply",
+      maskedNote: "Names are partly hidden until you sign in.",
+    },
+    footer: {
+      tagline: "Construction recruitment for the Saudi market.",
+      demoNote: "Demo build — seeded data, not a live marketplace.",
+      cities: "Riyadh · Jeddah · Madinah · Dammam",
+    },
+    talent: {
+      title: "Find talent",
+      subtitle: "Browse verified construction workers across four cities.",
+    },
+    jobs: {
+      title: "Browse jobs",
+      subtitle: "Open roles posted by contractors on ZEO.",
+    },
+  },
   errors: {
     forbidden: "Your role does not have access to this page.",
     generic: "Something went wrong.",

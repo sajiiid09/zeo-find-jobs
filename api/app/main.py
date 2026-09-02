@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import admin, applications, auth, dashboard, jobs, meta, workers
+from app.routers import admin, applications, auth, dashboard, jobs, meta, public, workers
 
 app = FastAPI(
     title="ZEO Find Work API",
@@ -18,7 +18,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (auth.router, meta.router, jobs.router, workers.router, applications.router, dashboard.router, admin.router):
+for router in (
+    auth.router,
+    meta.router,
+    public.router,
+    jobs.router,
+    workers.router,
+    applications.router,
+    dashboard.router,
+    admin.router,
+):
     app.include_router(router)
 
 

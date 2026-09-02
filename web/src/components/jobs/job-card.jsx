@@ -8,12 +8,17 @@ import { JobStatusBadge } from "@/components/ui/status";
 import { useLocale } from "@/i18n/locale-context";
 import { formatSalary, relativeTime } from "@/lib/format";
 
-export function JobCard({ job, showApplicants = false, showStatus = false }) {
+export function JobCard({
+  job,
+  showApplicants = false,
+  showStatus = false,
+  href = `/jobs/${job.id}`,
+}) {
   const { t, locale, tCity, tTrade, tCompany } = useLocale();
 
   return (
     <Link
-      href={`/jobs/${job.id}`}
+      href={href}
       className="group flex cursor-pointer flex-col gap-3 rounded-xl border border-line bg-surface p-4 transition-colors duration-200 hover:border-brand/50"
     >
       <div className="flex items-start justify-between gap-3">

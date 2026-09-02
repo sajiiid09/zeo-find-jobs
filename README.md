@@ -1,8 +1,8 @@
 # ZEO Find Work — Demo MVP
 
 A construction recruitment marketplace for the Saudi market, built as a clickable demo for a
-client pitch. Three roles — **worker** (buyer), **contractor** (seller) and **admin** — each with
-their own dashboard, sharing one marketplace of jobs and worker profiles.
+client pitch. A **public marketplace** anyone can browse without an account, plus three signed-in
+roles — **worker** (buyer), **contractor** (seller) and **admin** — each with their own dashboard.
 
 > This is a demo, not production software. Auth is a JWT in `localStorage`, all data is seeded,
 > and there are no tests.
@@ -65,7 +65,31 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-Open <http://localhost:3000> — it redirects to the login screen.
+Open <http://localhost:3000> — the public marketplace landing page. No account needed to browse.
+
+---
+
+## Public marketplace (no account)
+
+Anyone can browse before signing in — the Fiverr-shaped half of the product.
+
+| Route | What it shows |
+|---|---|
+| `/` | Landing: hero search, platform stats, the 8 trades, featured workers and latest jobs |
+| `/talent` | Worker directory with trade / city / experience filters |
+| `/talent/[id]` | Worker profile — masked |
+| `/browse-jobs` | Open jobs with trade / city / job-type / keyword filters |
+| `/browse-jobs/[id]` | Job detail with a gated apply panel |
+
+**Worker privacy on public pages.** The public tier serves a different schema
+(`PublicWorkerOut`) that never contains email, phone or `user_id`, and names are masked to first
+name plus surname initial — "Ahmed Al-Zahrani" becomes "Ahmed A." (`api/app/routers/public.py`,
+`mask_name`). Contact details appear only after a contractor signs in. Closed jobs 404 on the
+public tier; every `/api/public/*` endpoint is unauthenticated, and every other endpoint still
+returns 401 without a token.
+
+Gated calls-to-action carry the visitor back where they started: "Sign in to view contact" on
+`/talent/1` goes to `/login?next=/workers/1`, and the login lands there after authenticating.
 
 ---
 
@@ -102,36 +126,43 @@ Re-run it any time to reset the demo to a clean state.
 
 ## Three-minute demo script
 
-1. **Login** → click **Worker** → **Sign in**. Buyer dashboard: profile with verification badge,
+1. **Open `/` logged out.** Public marketplace: hero search, live platform stats, trade tiles,
+   available workers and latest openings. Click a worker — the profile shows trade, city, salary
+   and verification, but the name is masked and contact is behind **Sign in to view contact**.
+2. Click that button → it carries `?next=` through the login. Click **Contractor** → **Sign in** →
+   you land on the full profile with email and phone.
+3. **Sign out** → click **Worker** → **Sign in**. Buyer dashboard: profile with verification badge,
    application history, jobs recommended from their trade and city.
-2. **Find jobs** → filter by trade + city + job type → open a job → write a note → **Apply now**.
+4. **Find jobs** → filter by trade + city + job type → open a job → write a note → **Apply now**.
    The applicant count increments and the application appears under **My applications**.
-3. Toggle **العربية** in the top bar. The whole shell mirrors to RTL and stays Arabic as you
+5. Toggle **العربية** in the top bar. The whole shell mirrors to RTL and stays Arabic as you
    navigate. Toggle back.
-4. **Sign out** → click **Contractor** → **Sign in**. Contractor desk: job posts with applicant,
+6. **Sign out** → click **Contractor** → **Sign in**. Contractor desk: job posts with applicant,
    shortlist and hire counts, plus a shortlist of workers.
-5. Open a job post → **Shortlist** then **Hire** an applicant. The badge flips immediately.
-6. **Post a job** → fill the form → **Publish**. You land on the new post's applicant page, and the
+7. Open a job post → **Shortlist** then **Hire** an applicant. The badge flips immediately.
+8. **Post a job** → fill the form → **Publish**. You land on the new post's applicant page, and the
    job is live in the marketplace.
-7. **Sign out** → click **Administrator** → **Sign in**. Platform overview: user/job/application
+9. **Sign out** → click **Administrator** → **Sign in**. Platform overview: user/job/application
    counts, applications by status, jobs and workers by trade.
-8. **Approve** a pending worker from the queue — the pending count drops and their badge turns
+10. **Approve** a pending worker from the queue — the pending count drops and their badge turns
    verified across the marketplace.
-9. **Job moderation** → **Close** or **Flag** any post.
+11. **Job moderation** → **Close** or **Flag** any post.
 
 ---
 
 ## Roles and permissions
 
-| Capability | Worker | Contractor | Admin |
-|---|:--:|:--:|:--:|
-| Browse jobs | ✅ | ✅ | ✅ |
-| Apply to a job | ✅ | — | — |
-| Browse worker directory | — | ✅ | ✅ |
-| Post / close own jobs | — | ✅ | ✅ (any job) |
-| Move applicants through statuses | — | ✅ (own jobs) | ✅ |
-| Approve / reject verifications | — | — | ✅ |
-| Flag jobs | — | — | ✅ |
+| Capability | Visitor | Worker | Contractor | Admin |
+|---|:--:|:--:|:--:|:--:|
+| Browse open jobs | ✅ | ✅ | ✅ | ✅ |
+| Browse worker directory | ✅ masked | — | ✅ full | ✅ full |
+| See worker email / phone | — | — | ✅ | ✅ |
+| See closed jobs | — | — | ✅ | ✅ |
+| Apply to a job | — | ✅ | — | — |
+| Post / close own jobs | — | — | ✅ | ✅ (any job) |
+| Move applicants through statuses | — | — | ✅ (own jobs) | ✅ |
+| Approve / reject verifications | — | — | — | ✅ |
+| Flag jobs | — | — | — | ✅ |
 
 Role checks live in `api/app/deps.py` (`require_role`); ownership checks are inline in each router.
 
@@ -153,13 +184,16 @@ api/
     security.py        bcrypt hashing, JWT encode/decode
     deps.py            get_current_user, require_role
     serializers.py     shared row -> schema helpers
-    routers/           auth, meta, jobs, workers, applications, dashboard, admin
+    routers/           auth, meta, public, jobs, workers, applications, dashboard, admin
+    routers/public.py  unauthenticated tier: masked workers, open jobs, trade tiles, stats
     seed.py            deterministic demo dataset
   alembic/             one initial migration
 
 web/src/
-  app/                 routes: /login, /dashboard, /jobs, /workers, /applications,
+  app/(public)/        public: /, /talent, /talent/[id], /browse-jobs, /browse-jobs/[id]
+  app/(app)/           gated: /dashboard, /jobs, /workers, /applications,
                        /my-jobs, /post-job, /admin/*
+  app/login/           sign in, honours ?next=
   components/          ui primitives, layout shell, job/worker/dashboard pieces
   lib/                 api client, auth context, useAsync, formatters
   i18n/                en + ar dictionaries, locale context
@@ -186,6 +220,9 @@ web/src/
 - The JWT lives in `localStorage`, so every page is a client component — no SSR of protected
   routes and a brief loading state on first paint.
 - Workers cannot edit their own profile; the verification queue is fed by seeded pending rows.
+- The public directory lists every worker regardless of verification status — the badge shows
+  which is which. Restricting it to verified profiles is a one-line filter in
+  `api/app/routers/public.py` if the client prefers that.
 - No registration, file uploads, messaging, or search ranking.
 - Arabic is a stub: all UI chrome, trades and cities are translated, but seeded job titles and
   descriptions stay in English.
